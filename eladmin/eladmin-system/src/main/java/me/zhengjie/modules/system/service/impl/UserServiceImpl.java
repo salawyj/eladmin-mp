@@ -41,7 +41,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -197,6 +196,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public User getLoginData(String userName) {
         return userMapper.findByUsername(userName);
     }
+    @Override
+    public User getLoginDataByPhone(String phone) {
+        return userMapper.findByPhone(phone);
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -253,6 +256,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userMapper.updateEmail(username, email);
         flushCache(username);
     }
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updatePhone(String username, String phone) {
+        userMapper.updatePhone(username, phone);
+        flushCache(username);
+    }
+
 
     @Override
     public void download(List<User> users, HttpServletResponse response) throws IOException {

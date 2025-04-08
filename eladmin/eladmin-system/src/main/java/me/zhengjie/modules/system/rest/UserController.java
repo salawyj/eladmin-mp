@@ -206,4 +206,17 @@ public class UserController {
             throw new BadRequestException("角色权限不足");
         }
     }
+
+
+    @Log("修改手机号码")
+    @ApiOperation("修改手机号码")
+    @PostMapping(value = "/updatePhone")
+    public ResponseEntity<Object> updateUserPhone(@PathVariable String code, @RequestBody User resources) throws Exception {
+
+        //验证码
+        User user = userService.findByName(SecurityUtils.getCurrentUsername());
+
+        userService.updatePhone(user.getUsername(),resources.getPhone());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

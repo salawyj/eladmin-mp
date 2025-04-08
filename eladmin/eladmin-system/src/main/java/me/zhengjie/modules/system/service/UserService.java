@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import me.zhengjie.modules.system.domain.User;
 import me.zhengjie.modules.system.domain.dto.UserQueryCriteria;
 import me.zhengjie.utils.PageResult;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -75,6 +76,8 @@ public interface UserService extends IService<User> {
      */
     User getLoginData(String userName);
 
+    User getLoginDataByPhone(String phone);
+
     /**
      * 修改密码
      * @param username 用户名
@@ -112,6 +115,9 @@ public interface UserService extends IService<User> {
      * @return /
      */
     List<User> queryAll(UserQueryCriteria criteria);
+
+    @Transactional(rollbackFor = Exception.class)
+    void updatePhone(String username, String phone);
 
     /**
      * 导出数据

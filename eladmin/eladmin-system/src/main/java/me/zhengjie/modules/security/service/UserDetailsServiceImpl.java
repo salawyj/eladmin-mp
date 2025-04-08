@@ -18,6 +18,8 @@ package me.zhengjie.modules.security.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.zhengjie.exception.BadRequestException;
+import me.zhengjie.modules.app.domain.AppUser;
+import me.zhengjie.modules.app.service.AppUserService;
 import me.zhengjie.modules.security.service.dto.AuthorityDto;
 import me.zhengjie.modules.security.service.dto.JwtUserDto;
 import me.zhengjie.modules.system.domain.User;
@@ -62,4 +64,29 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         return jwtUserDto;
     }
+
+
+
+    public JwtUserDto loadUserByPhone(String phone) {
+        JwtUserDto jwtUserDto = userCacheManager.getUserCacheByPhone(phone);
+        if(jwtUserDto == null){
+            //modi ++++
+            User user = userService.getLoginDataByPhone(phone);
+            if (user == null) {
+                throw new BadRequestException("用户不存在");
+            } else {
+                if (!user.getEnabled()) {
+                    throw new BadRequestException("账号未激活！");
+                }
+                // 获取用户的权限
+                List<AuthorityDto> authorities = roleService.buildPermissions(user);
+                // 初始化JwtUserDto
+                jwtUserDto = new JwtUserDto(user, dataService.getDeptIds(user), authorities);
+                // 添加缓存数据
+                userCacheManager.addUserCache(phone, jwtUserDto);
+            }
+        }
+        return jwtUserDto;
+    }
 }
+

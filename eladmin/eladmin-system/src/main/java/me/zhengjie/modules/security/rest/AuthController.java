@@ -33,13 +33,17 @@ import me.zhengjie.modules.security.config.LoginProperties;
 import me.zhengjie.modules.security.config.SecurityProperties;
 import me.zhengjie.modules.security.security.TokenProvider;
 import me.zhengjie.modules.security.service.UserDetailsServiceImpl;
+import me.zhengjie.modules.security.service.dto.AppAuthUserDto;
 import me.zhengjie.modules.security.service.dto.AuthUserDto;
 import me.zhengjie.modules.security.service.dto.JwtUserDto;
 import me.zhengjie.modules.security.service.OnlineUserService;
+import me.zhengjie.modules.security.service.dto.SMSSendDto;
+import me.zhengjie.modules.system.domain.User;
 import me.zhengjie.utils.RsaUtils;
 import me.zhengjie.utils.RedisUtils;
 import me.zhengjie.utils.SecurityUtils;
 import me.zhengjie.utils.StringUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -75,8 +79,8 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsServiceImpl userDetailsService;
 
-    @Log("用户登录")
-    @ApiOperation("登录授权")
+    @Log("后端用户登录")
+    @ApiOperation("后端登录授权")
     @AnonymousPostMapping(value = "/login")
     public ResponseEntity<Object> login(@Validated @RequestBody AuthUserDto authUser, HttpServletRequest request) throws Exception {
         // 密码解密
@@ -115,7 +119,83 @@ public class AuthController {
         // 返回登录信息
         return ResponseEntity.ok(authInfo);
     }
+    @Log("前端用户登录注册")
+    @ApiOperation("前端登录授权注册")
+    @AnonymousPostMapping(value = "/app/login")
+    public ResponseEntity<Object> login(@Validated @RequestBody AppAuthUserDto authUser, HttpServletRequest request) throws Exception {
+        // 密码解密
+//        String password = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, authUser.getPassword());
+        // 查询验证码
+        String code = redisUtils.get(authUser.getPhone(), String.class);
+        // 清除验证码
+        redisUtils.del(authUser.getPhone());
+       /* if (StringUtils.isBlank(code)) {
+            throw new BadRequestException("验证码不存在或已过期");
+        }
+        if (StringUtils.isBlank(authUser.getCode()) || !authUser.getCode().equalsIgnoreCase(code)) {
+            throw new BadRequestException("验证码错误");
+        }*/
+        // 获取用户信息
+        JwtUserDto jwtUser = null;
 
+        if(authUser.getMode().equals("1")){
+            //注册，新增用户,权限，
+            jwtUser = new JwtUserDto(new User(),null,null);
+        }else {
+            //登录，查询用户
+            jwtUser = userDetailsService.loadUserByPhone(authUser.getPhone());
+        }
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(jwtUser, null, jwtUser.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // 生成令牌
+        String token = tokenProvider.createToken(jwtUser);
+        // 返回 token 与 用户信息
+        JwtUserDto finalJwtUser = jwtUser;
+        Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
+            put("token", properties.getTokenStartWith() + token);
+            put("user", finalJwtUser);
+        }};
+        if (loginProperties.isSingleLogin()) {
+            // 踢掉之前已经登录的token
+            onlineUserService.kickOutForUsername(jwtUser.getUsername());
+        }
+        // 保存在线信息
+        onlineUserService.save(jwtUser, token, request);
+        // 返回登录信息
+        return ResponseEntity.ok(authInfo);
+    }
+
+    @ApiOperation("获取手机验证码")
+    @AnonymousGetMapping(value = "/phone/code")
+    public  ResponseEntity<Object> getCode(@Validated @RequestBody AppAuthUserDto authUser) {
+        // 通过阿里云发验证码给手机，
+        //保存到数据库
+        // 1. 校验手机号格式
+//        if (!RegexUtils.isPhoneValid(dto.getPhone())) {
+//            return ApiResult.fail("手机号格式错误");
+//        }
+
+        // 2. 生成6位随机验证码
+        String code = RandomStringUtils.randomNumeric(6);
+
+        // 3. 保存验证码记录（包含IP限流）
+//        smsService.saveCode(dto.getPhone(), code, request.getRemoteAddr());
+
+        // 4. 调用短信服务（实际项目替换为阿里云/腾讯云SDK）
+//        boolean success = mockSendSms(dto.getPhone(), code);
+        // 保存
+        redisUtils.set(authUser.getPhone(), code, new CaptchaConfig().getExpiration(), TimeUnit.MINUTES);
+
+        boolean success =true;
+        SMSSendDto smsSendDto = new SMSSendDto ();
+        if(success){
+            smsSendDto = new SMSSendDto("success","发送成功");
+        }else {
+            smsSendDto = new SMSSendDto("fail","发送失败");
+        }
+        return ResponseEntity.ok(smsSendDto);
+    }
     @ApiOperation("获取用户信息")
     @GetMapping(value = "/info")
     public ResponseEntity<UserDetails> getUserInfo() {
@@ -123,7 +203,7 @@ public class AuthController {
         return ResponseEntity.ok(jwtUser);
     }
 
-    @ApiOperation("获取验证码")
+    @ApiOperation("获取图形验证码")
     @AnonymousGetMapping(value = "/code")
     public ResponseEntity<Object> getCode() {
         // 获取运算的结果

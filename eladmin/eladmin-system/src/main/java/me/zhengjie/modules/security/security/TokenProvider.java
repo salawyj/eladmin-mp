@@ -24,6 +24,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.zhengjie.modules.security.config.SecurityProperties;
+import me.zhengjie.modules.security.service.dto.AppJwtUserDto;
 import me.zhengjie.modules.security.service.dto.JwtUserDto;
 import me.zhengjie.utils.RedisUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -78,6 +79,26 @@ public class TokenProvider implements InitializingBean {
         return jwtBuilder
                 .setClaims(claims)
                 .setSubject(user.getUsername())
+                .compact();
+    }
+
+
+    /**
+     * 创建Token 设置永不过期，
+     * Token 的时间有效性转到Redis 维护
+     * @param user /
+     * @return /
+     */
+    public String createToken(AppJwtUserDto user) {
+        // 设置参数
+        Map<String, Object> claims = new HashMap<>(6);
+        // 设置用户ID
+        claims.put(AUTHORITIES_UID_KEY, user.getAppUser().getUserId());
+        // 设置UUID，确保每次Token不一样
+        claims.put(AUTHORITIES_UUID_KEY, IdUtil.simpleUUID());
+        return jwtBuilder
+                .setClaims(claims)
+                .setSubject(user.getAppUser().getPhone())
                 .compact();
     }
 

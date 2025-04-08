@@ -16,7 +16,9 @@
 package me.zhengjie.modules.security.service;
 
 import cn.hutool.core.util.RandomUtil;
+import me.zhengjie.modules.security.config.AppLoginProperties;
 import me.zhengjie.modules.security.config.LoginProperties;
+import me.zhengjie.modules.security.service.dto.AppJwtUserDto;
 import me.zhengjie.modules.security.service.dto.JwtUserDto;
 import me.zhengjie.utils.RedisUtils;
 import me.zhengjie.utils.StringUtils;
@@ -52,6 +54,18 @@ public class UserCacheManager {
         }
         return null;
     }
+    /**
+     * 返回用户缓存
+     * @param phone
+     * @return JwtUserDto
+     */
+    public JwtUserDto getUserCacheByPhone(String phone) {
+        if (StringUtils.isNotEmpty(phone)) {
+            // 获取数据
+            return redisUtils.get(AppLoginProperties.cacheKey + phone, JwtUserDto.class);
+        }
+        return null;
+    }
 
     /**
      *  添加缓存到Redis
@@ -67,6 +81,20 @@ public class UserCacheManager {
             redisUtils.set(LoginProperties.cacheKey + userName, user, time);
         }
     }
+    /**
+     *  添加缓存到Redis
+     * @param phone 用户手机号
+     */
+    @Async
+    public void addUserPhoneCache(String phone, AppJwtUserDto user) {
+
+        if (StringUtils.isNotEmpty(phone)) {
+            // 添加数据, 避免数据同时过期
+            long time = idleTime + RandomUtil.randomInt(900, 1800);
+            redisUtils.set(AppLoginProperties.cacheKey + phone, user, time);
+        }
+    }
+
 
     /**
      * 清理用户缓存信息

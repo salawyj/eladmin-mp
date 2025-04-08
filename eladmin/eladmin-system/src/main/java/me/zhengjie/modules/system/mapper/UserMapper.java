@@ -51,6 +51,8 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("update sys_user set email = #{email} where username = #{username}")
     void updateEmail(@Param("username") String username, @Param("email") String email);
+    @Select("update sys_user set phone = #{phone} where username = #{username}")
+    void updatePhone(@Param("username") String username, @Param("phone") String phone);
 
     List<User> findByRoleId(@Param("roleId") Long roleId);
 

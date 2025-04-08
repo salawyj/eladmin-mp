@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.zhengjie.modules.app.mapper.AppInviteCodeMapper">
+    <resultMap id="BaseResultMap" type="me.zhengjie.modules.app.domain.AppInviteCode">
+        <id column="code" property="code"/>
+        <result column="app_user_id" property="appUserId"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="expire_time" property="expireTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        code, app_user_id, status, create_time, expire_time
+    </sql>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from app_invite_code
+        <where>
+        </where>
+        order by code desc
+    </select>
+</mapper>
