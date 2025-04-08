@@ -58,6 +58,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private final RedisUtils redisUtils;
     private final UserCacheManager userCacheManager;
     private final OnlineUserService onlineUserService;
+    private final String usernameUid = "2387";
 
     @Override
     public PageResult<User> queryAll(UserQueryCriteria criteria, Page<Object> page) {
@@ -301,5 +302,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     private void flushCache(String username) {
         userCacheManager.cleanUserCache(username);
+    }
+
+    /**
+     * 根据手机号码创建用户名
+     * @param phone
+     * @return
+     */
+    @Override
+    public String createUsernameByPhone(String phone) {
+        return "app_" + phone+"_"+usernameUid;
     }
 }

@@ -38,7 +38,11 @@ import me.zhengjie.modules.security.service.dto.AuthUserDto;
 import me.zhengjie.modules.security.service.dto.JwtUserDto;
 import me.zhengjie.modules.security.service.OnlineUserService;
 import me.zhengjie.modules.security.service.dto.SMSSendDto;
+import me.zhengjie.modules.system.domain.Dept;
+import me.zhengjie.modules.system.domain.Job;
+import me.zhengjie.modules.system.domain.Role;
 import me.zhengjie.modules.system.domain.User;
+import me.zhengjie.modules.system.service.UserService;
 import me.zhengjie.utils.RsaUtils;
 import me.zhengjie.utils.RedisUtils;
 import me.zhengjie.utils.SecurityUtils;
@@ -55,7 +59,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -78,6 +84,15 @@ public class AuthController {
     private final LoginProperties loginProperties;
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsServiceImpl userDetailsService;
+    private final UserService userService;
+    /**
+     * app用户默认信息，
+     */
+    private final Long APP_USER_DEFAULT_DEPT_ID =19L;
+    private final Long APP_USER_DEFAULT_JOB_ID =10L;
+    private final Long APP_USER_DEFAULT_ROLE_ID =3L;
+    private final String APP_USER_DEFAULT_EAMIL ="test888@888.com";
+
 
     @Log("后端用户登录")
     @ApiOperation("后端登录授权")
@@ -125,26 +140,29 @@ public class AuthController {
     public ResponseEntity<Object> login(@Validated @RequestBody AppAuthUserDto authUser, HttpServletRequest request) throws Exception {
         // 密码解密
 //        String password = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, authUser.getPassword());
+       //设置用户名
+        authUser.setUsername(userService.createUsernameByPhone(authUser.getPhone()));
         // 查询验证码
-        String code = redisUtils.get(authUser.getPhone(), String.class);
+        String code = redisUtils.get(authUser.getUsername(), String.class);
         // 清除验证码
-        redisUtils.del(authUser.getPhone());
-       /* if (StringUtils.isBlank(code)) {
+        redisUtils.del(authUser.getUsername());
+        if (StringUtils.isBlank(code)) {
             throw new BadRequestException("验证码不存在或已过期");
         }
         if (StringUtils.isBlank(authUser.getCode()) || !authUser.getCode().equalsIgnoreCase(code)) {
             throw new BadRequestException("验证码错误");
-        }*/
-        // 获取用户信息
-        JwtUserDto jwtUser = null;
-
-        if(authUser.getMode().equals("1")){
-            //注册，新增用户,权限，
-            jwtUser = new JwtUserDto(new User(),null,null);
-        }else {
-            //登录，查询用户
-            jwtUser = userDetailsService.loadUserByPhone(authUser.getPhone());
         }
+        // //注册，新增用户,权限，
+        if(authUser.getMode().equals("1")){
+            try {
+                this.createUser(authUser);
+            }catch (Exception e){
+                e.printStackTrace();
+                throw new BadRequestException("注册失败");
+            }
+        }
+        //查询用户
+        JwtUserDto jwtUser = userDetailsService.loadUserByUsername(authUser.getUsername());
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(jwtUser, null, jwtUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -166,6 +184,42 @@ public class AuthController {
         return ResponseEntity.ok(authInfo);
     }
 
+    /**
+     * 创建新用户
+     * @param authUser
+     * @throws Exception
+     */
+    private void createUser(AppAuthUserDto authUser) throws Exception {
+        User user = new User();
+        user.setUsername(authUser.getUsername());
+        user.setPhone(authUser.getPhone());
+        user.setEnabled(true);
+        user.setIsAdmin(false);
+        user.setNickName(RandomStringUtils.randomNumeric(18));
+        user.setEmail(APP_USER_DEFAULT_EAMIL);
+        {
+            Dept dept = new Dept();
+            dept.setId(APP_USER_DEFAULT_DEPT_ID);
+            user.setDept(dept);
+        }
+        {
+            Job job = new Job();
+            job.setId(APP_USER_DEFAULT_JOB_ID);
+            Set<Job> jobs = new HashSet<>();
+            jobs.add(job);
+            user.setJobs(jobs);
+        }
+        {
+            Role role = new Role();
+            role.setId(APP_USER_DEFAULT_ROLE_ID);
+            Set<Role> roles = new HashSet<>();
+            roles.add(role);
+            user.setRoles(roles);
+        }
+        user.setPassword(passwordEncoder.encode("123456"));
+        userService.create(user);
+    }
+
     @ApiOperation("获取手机验证码")
     @AnonymousGetMapping(value = "/phone/code")
     public  ResponseEntity<Object> getCode(@Validated @RequestBody AppAuthUserDto authUser) {
@@ -178,14 +232,16 @@ public class AuthController {
 
         // 2. 生成6位随机验证码
         String code = RandomStringUtils.randomNumeric(6);
+        log.info("code:{}",code);
 
         // 3. 保存验证码记录（包含IP限流）
 //        smsService.saveCode(dto.getPhone(), code, request.getRemoteAddr());
 
         // 4. 调用短信服务（实际项目替换为阿里云/腾讯云SDK）
 //        boolean success = mockSendSms(dto.getPhone(), code);
+        String username = userService.createUsernameByPhone(authUser.getPhone());
         // 保存
-        redisUtils.set(authUser.getPhone(), code, new CaptchaConfig().getExpiration(), TimeUnit.MINUTES);
+        redisUtils.set(username, code, new CaptchaConfig().getExpiration(), TimeUnit.MINUTES);
 
         boolean success =true;
         SMSSendDto smsSendDto = new SMSSendDto ();

@@ -36,7 +36,7 @@ public interface AppInviteCodeMapper extends BaseMapper<AppInviteCode> {
     IPage<AppInviteCode> findAll(@Param("criteria") AppInviteCodeQueryCriteria criteria, Page<Object> page);
 
     List<AppInviteCode> findAll(@Param("criteria") AppInviteCodeQueryCriteria criteria);
-    AppInviteCode findByUserId(@Param("userId") String userId);
+    AppInviteCode findEffectByUserId(@Param("userId") String userId);
 
 
 }

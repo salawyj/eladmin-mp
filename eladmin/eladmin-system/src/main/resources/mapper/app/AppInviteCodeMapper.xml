@@ -22,9 +22,9 @@
         order by code desc
     </select>
 
-    <select id="findByUserId" resultType="me.zhengjie.modules.app.domain.AppInviteCode">
+    <select id="findEffectByUserId" resultType="me.zhengjie.modules.app.domain.AppInviteCode">
         select code, app_user_id , status from app_invite_code
-        where app_user_id = #{userId}
+        where app_user_id = #{userId} and status = 0
     </select>
 
 </mapper>

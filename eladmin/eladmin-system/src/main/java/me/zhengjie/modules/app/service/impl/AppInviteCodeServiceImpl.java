@@ -26,12 +26,10 @@ import me.zhengjie.modules.app.mapper.AppInviteCodeMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import me.zhengjie.utils.PageUtil;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
+
 import me.zhengjie.utils.PageResult;
 
 /**
@@ -55,10 +53,32 @@ public class AppInviteCodeServiceImpl extends ServiceImpl<AppInviteCodeMapper, A
         return appInviteCodeMapper.findAll(criteria);
     }
 
+    /**
+     * / 生成唯一邀请码（6位字母数字组合）
+     */
+    private String generateCode(Long userId) {
+        String base = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 去除易混淆字符
+        Random random = new Random(userId + System.currentTimeMillis());
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            int index = random.nextInt(base.length());
+            sb.append(base.charAt(index));
+        }
+        return sb.toString();
+    }
     @Override
     public AppInviteCode findByUserId(String userId){
+        AppInviteCode appInviteCode = appInviteCodeMapper.findEffectByUserId(userId);
+        if(appInviteCode == null ){
+            appInviteCode = new AppInviteCode();
+            appInviteCode.setAppUserId(Long.valueOf(userId));
+            appInviteCode.setCode(this.generateCode(Long.valueOf(userId)));
+            appInviteCode.setStatus(0);
+            appInviteCodeMapper.insert(appInviteCode);
+//            save(appInviteCode);
+        }
         //查询是否有邀请码，如果过期，生成新的+++++
-        return appInviteCodeMapper.findByUserId(userId);
+        return appInviteCode;
     }
     @Override
     @Transactional(rollbackFor = Exception.class)

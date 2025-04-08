@@ -45,4 +45,7 @@ public class AppAuthUserDto {
 
     @ApiModelProperty(value = "邀请码")
     private String inviteCode = "";
+
+    @ApiModelProperty(value = "用户名")
+    private String username;
 }

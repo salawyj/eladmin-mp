@@ -139,4 +139,6 @@ public interface UserService extends IService<User> {
      * @param pwd 密码
      */
     void resetPwd(Set<Long> ids, String pwd);
+
+    String createUsernameByPhone(String phone);
 }

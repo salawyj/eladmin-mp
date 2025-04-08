@@ -121,9 +121,13 @@
         where email = #{email}
     </select>
 
-    <select id="findByPhone" resultType="me.zhengjie.modules.system.domain.User">
-        select user_id as id, username from sys_user
-        where phone = #{phone}
+    <select id="findByPhone" resultMap="BaseResultMap">
+        select
+        u.password user_password, u.is_admin user_is_admin,
+        <include refid="Base_Column_List"/>
+        from sys_user u
+        left join sys_dept d on u.dept_id = d.dept_id
+        where u.phone = #{phone}
     </select>
 
     <select id="findByRoleId" resultType="me.zhengjie.modules.system.domain.User">

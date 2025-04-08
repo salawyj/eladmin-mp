@@ -45,6 +45,15 @@ public class AppInviteCodeController {
 
     private final AppInviteCodeService appInviteCodeService;
 
+
+    @GetMapping(value = "/queryInfo")
+    @ApiOperation("查询邀请码")
+    @PreAuthorize("@el.check('appInviteCode:info')")
+    public ResponseEntity<AppInviteCode> queryAppInviteCodeInfo(@RequestBody String userId){
+        return new ResponseEntity<>(appInviteCodeService.findByUserId(userId),HttpStatus.OK);
+    }
+
+
     @ApiOperation("导出数据")
     @GetMapping(value = "/download")
     @PreAuthorize("@el.check('appInviteCode:list')")
@@ -61,12 +70,6 @@ public class AppInviteCodeController {
     }
 
 
-    @GetMapping(value = "/queryInfo")
-    @ApiOperation("查询邀请码")
-    @PreAuthorize("@el.check('appInviteCode:info')")
-    public ResponseEntity<AppInviteCode> queryAppInviteCodeInfo(@RequestBody String userId){
-        return new ResponseEntity<>(appInviteCodeService.findByUserId(userId),HttpStatus.OK);
-    }
 
 
     @PostMapping

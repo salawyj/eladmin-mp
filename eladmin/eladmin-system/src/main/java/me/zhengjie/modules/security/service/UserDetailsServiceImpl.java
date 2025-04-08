@@ -64,29 +64,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         return jwtUserDto;
     }
-
-
-
-    public JwtUserDto loadUserByPhone(String phone) {
-        JwtUserDto jwtUserDto = userCacheManager.getUserCacheByPhone(phone);
-        if(jwtUserDto == null){
-            //modi ++++
-            User user = userService.getLoginDataByPhone(phone);
-            if (user == null) {
-                throw new BadRequestException("用户不存在");
-            } else {
-                if (!user.getEnabled()) {
-                    throw new BadRequestException("账号未激活！");
-                }
-                // 获取用户的权限
-                List<AuthorityDto> authorities = roleService.buildPermissions(user);
-                // 初始化JwtUserDto
-                jwtUserDto = new JwtUserDto(user, dataService.getDeptIds(user), authorities);
-                // 添加缓存数据
-                userCacheManager.addUserCache(phone, jwtUserDto);
-            }
-        }
-        return jwtUserDto;
-    }
 }
 
