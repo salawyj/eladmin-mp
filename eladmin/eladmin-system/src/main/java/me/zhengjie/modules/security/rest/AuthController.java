@@ -27,6 +27,8 @@ import me.zhengjie.annotation.rest.AnonymousGetMapping;
 import me.zhengjie.annotation.rest.AnonymousPostMapping;
 import me.zhengjie.config.properties.RsaProperties;
 import me.zhengjie.exception.BadRequestException;
+import me.zhengjie.modules.app.domain.AppInviteCode;
+import me.zhengjie.modules.app.service.AppInviteCodeService;
 import me.zhengjie.modules.security.config.CaptchaConfig;
 import me.zhengjie.modules.security.config.enums.LoginCodeEnum;
 import me.zhengjie.modules.security.config.LoginProperties;
@@ -85,13 +87,14 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsServiceImpl userDetailsService;
     private final UserService userService;
+    private final AppInviteCodeService appInviteCodeService;
     /**
      * app用户默认信息，
      */
     private final Long APP_USER_DEFAULT_DEPT_ID =19L;
     private final Long APP_USER_DEFAULT_JOB_ID =10L;
     private final Long APP_USER_DEFAULT_ROLE_ID =3L;
-    private final String APP_USER_DEFAULT_EAMIL ="test888@888.com";
+    private final String APP_USER_DEFAULT_EAMIL ="@888.com";
 
 
     @Log("后端用户登录")
@@ -140,7 +143,15 @@ public class AuthController {
     public ResponseEntity<Object> login(@Validated @RequestBody AppAuthUserDto authUser, HttpServletRequest request) throws Exception {
         // 密码解密
 //        String password = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, authUser.getPassword());
-       //设置用户名
+       if(StringUtils.isNoneEmpty(authUser.getInviteCode())){
+           //邀请码是否有效
+           AppInviteCode appInviteCode = appInviteCodeService.findEffectByCode(authUser.getInviteCode());
+           if(appInviteCode==null){
+               throw new BadRequestException("邀请码不存在或已过期");
+           }
+       }
+
+        //设置用户名
         authUser.setUsername(userService.createUsernameByPhone(authUser.getPhone()));
         // 查询验证码
         String code = redisUtils.get(authUser.getUsername(), String.class);
@@ -154,8 +165,13 @@ public class AuthController {
         }
         // //注册，新增用户,权限，
         if(authUser.getMode().equals("1")){
+           User user = userService.findByPhone(authUser.getPhone());
+           if(user != null){
+               throw new BadRequestException("用户已经注册");
+           }
             try {
                 this.createUser(authUser);
+                //增加一条邀请记录，修改邀请码的状态
             }catch (Exception e){
                 e.printStackTrace();
                 throw new BadRequestException("注册失败");
@@ -196,7 +212,7 @@ public class AuthController {
         user.setEnabled(true);
         user.setIsAdmin(false);
         user.setNickName(RandomStringUtils.randomNumeric(18));
-        user.setEmail(APP_USER_DEFAULT_EAMIL);
+        user.setEmail(authUser.getPhone()+APP_USER_DEFAULT_EAMIL);
         {
             Dept dept = new Dept();
             dept.setId(APP_USER_DEFAULT_DEPT_ID);

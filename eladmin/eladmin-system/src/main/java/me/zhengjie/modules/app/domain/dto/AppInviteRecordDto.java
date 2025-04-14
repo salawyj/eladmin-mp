@@ -13,49 +13,50 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 */
-package me.zhengjie.modules.app.domain;
+package me.zhengjie.modules.app.domain.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import lombok.Data;
 import cn.hutool.core.bean.BeanUtil;
-import io.swagger.annotations.ApiModelProperty;
 import cn.hutool.core.bean.copier.CopyOptions;
-import java.sql.Timestamp;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.sql.Timestamp;
 
 /**
 * @description /
 * @author lijunhui
-* @date 2025-04-08
+* @date 2025-04-09
 **/
 @Data
-@TableName("app_invite_code")
-public class AppInviteCode implements Serializable {
+public class AppInviteRecordDto implements Serializable {
 
-    @TableId(value = "invite_code_id", type = IdType.AUTO)
     @ApiModelProperty(value = "ID")
-    private Long inviteCodeId;
+    private Long recordId;
 
-    @ApiModelProperty(value = "邀请码")
-    private String code;
+    @ApiModelProperty(value = "邀请用户id")
+    private Long inviterId;
 
     @NotNull
-    @ApiModelProperty(value = "所属用户ID")
-    private Long appUserId;
+    @ApiModelProperty(value = "被邀请用户id")
+    private Long inviteeId;
 
-    @ApiModelProperty(value = "0-未使用 1-已使用")
-    private Integer status;
+    @ApiModelProperty(value = "0-未发放 1-已发放")
+    private Integer rewardStatus;
 
-    @ApiModelProperty(value = "createTime")
+    @ApiModelProperty(value = "创建者")
+    private String createBy;
+
+    @ApiModelProperty(value = "创建日期")
     private Timestamp createTime;
 
-    @ApiModelProperty(value = "过期时间")
-    private Timestamp expireTime;
-
-    public void copy(AppInviteCode source){
+    @ApiModelProperty(value = "邀请码")
+    private String inviteCode;
+    public void copy(AppInviteRecordDto source){
         BeanUtil.copyProperties(source,this, CopyOptions.create().setIgnoreNullValue(true));
     }
 }

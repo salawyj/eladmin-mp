@@ -53,6 +53,41 @@ public class AppInviteCodeServiceImpl extends ServiceImpl<AppInviteCodeMapper, A
         return appInviteCodeMapper.findAll(criteria);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void create(AppInviteCode resources) {
+        appInviteCodeMapper.insert(resources);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void update(AppInviteCode resources) {
+        AppInviteCode appInviteCode = getById(resources.getInviteCodeId());
+        appInviteCode.copy(resources);
+        appInviteCodeMapper.updateById(appInviteCode);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteAll(List<Long> ids) {
+        appInviteCodeMapper.deleteBatchIds(ids);
+    }
+
+    @Override
+    public void download(List<AppInviteCode> all, HttpServletResponse response) throws IOException {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (AppInviteCode appInviteCode : all) {
+            Map<String,Object> map = new LinkedHashMap<>();
+            map.put("邀请码", appInviteCode.getCode());
+            map.put("所属用户ID", appInviteCode.getAppUserId());
+            map.put("0-未使用 1-已使用", appInviteCode.getStatus());
+            map.put(" createTime",  appInviteCode.getCreateTime());
+            map.put("过期时间", appInviteCode.getExpireTime());
+            list.add(map);
+        }
+        FileUtil.downloadExcel(list, response);
+    }
+
     /**
      * / 生成唯一邀请码（6位字母数字组合）
      */
@@ -78,39 +113,17 @@ public class AppInviteCodeServiceImpl extends ServiceImpl<AppInviteCodeMapper, A
 //            save(appInviteCode);
         }
         //查询是否有邀请码，如果过期，生成新的+++++
+
         return appInviteCode;
     }
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void create(AppInviteCode resources) {
-        appInviteCodeMapper.insert(resources);
-    }
 
+    /**
+     * 查询有效的邀请码
+     * @param code
+     * @return
+     */
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void update(AppInviteCode resources) {
-        AppInviteCode appInviteCode = getById(resources.getCode());
-        appInviteCode.copy(resources);
-        appInviteCodeMapper.updateById(appInviteCode);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void deleteAll(List<String> ids) {
-        appInviteCodeMapper.deleteBatchIds(ids);
-    }
-
-    @Override
-    public void download(List<AppInviteCode> all, HttpServletResponse response) throws IOException {
-        List<Map<String, Object>> list = new ArrayList<>();
-        for (AppInviteCode appInviteCode : all) {
-            Map<String,Object> map = new LinkedHashMap<>();
-            map.put("所属用户ID", appInviteCode.getAppUserId());
-            map.put("0-未使用 1-已使用", appInviteCode.getStatus());
-            map.put(" createTime",  appInviteCode.getCreateTime());
-            map.put("过期时间", appInviteCode.getExpireTime());
-            list.add(map);
-        }
-        FileUtil.downloadExcel(list, response);
+    public AppInviteCode findEffectByCode(String code){
+        return appInviteCodeMapper.findEffectByCode(code);
     }
 }

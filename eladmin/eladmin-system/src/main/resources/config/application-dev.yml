@@ -7,6 +7,12 @@ spring:
       url: jdbc:p6spy:mysql://8.217.1.253:3306/eladmin?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
       username: root
       password: OOoo9900
+#阿里云数据库
+#      url: jdbc:p6spy:mysql://rm-bp137c9q95p5n261lno.mysql.rds.aliyuncs.com:3306/eladmin?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
+#      username: eladmin
+#      password: OOoo9900
+
+
       # 初始连接数，建议设置为与最小空闲连接数相同
       initial-size: 20
       # 最小空闲连接数，保持足够的空闲连接以应对请求

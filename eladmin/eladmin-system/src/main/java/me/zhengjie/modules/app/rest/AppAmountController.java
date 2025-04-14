@@ -20,7 +20,11 @@ import me.zhengjie.modules.app.domain.AppAmount;
 import me.zhengjie.modules.app.service.AppAmountService;
 import me.zhengjie.modules.app.domain.dto.AppAmountQueryCriteria;
 import lombok.RequiredArgsConstructor;
+
+import java.math.BigDecimal;
 import java.util.List;
+
+import me.zhengjie.utils.SecurityUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -63,16 +67,28 @@ public class AppAmountController {
     @GetMapping(value = "/queryInfo")
     @ApiOperation("查询用户金额")
     @PreAuthorize("@el.check('appAmount:info')")
-    public ResponseEntity<AppAmount> queryAppAmountInfo(@RequestBody String userId){
-        return new ResponseEntity<>(appAmountService.findById(userId),HttpStatus.OK);
+    public ResponseEntity<AppAmount> queryAppAmountInfo(@RequestParam String userId){
+        AppAmount appAmount = appAmountService.findById(SecurityUtils.getCurrentUserId().toString());
+        if(appAmount == null){
+            appAmount =new AppAmount();
+            appAmount.setAppUserId(Long.parseLong(userId));
+            appAmount.setGiftBalance(new BigDecimal(0));
+            appAmount.setGiftTotal(new BigDecimal(0));
+            appAmount.setInviteNum(0L);
+            appAmount.setRechargeBalance(new BigDecimal(0));
+            appAmount.setRechargeTotal(new BigDecimal(0));
+            appAmountService.create(appAmount);
+        }
+        return new ResponseEntity<>(appAmount,HttpStatus.OK);
     }
 
 
-    @PostMapping
+    @PostMapping(value = "/add")
     @Log("新增用户金额")
     @ApiOperation("新增用户金额")
     @PreAuthorize("@el.check('appAmount:add')")
     public ResponseEntity<Object> createAppAmount(@Validated @RequestBody AppAmount resources){
+
         appAmountService.create(resources);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

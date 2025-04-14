@@ -26,6 +26,7 @@ import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import me.zhengjie.base.BaseEntity;
 
 /**
 * @description /
@@ -34,7 +35,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 **/
 @Data
 @TableName("app_amount")
-public class AppAmount implements Serializable {
+public class AppAmount extends BaseEntity implements Serializable {
 
     @TableId(value = "amount_id", type = IdType.AUTO)
     @ApiModelProperty(value = "ID")
@@ -60,20 +61,11 @@ public class AppAmount implements Serializable {
     private String unit;
 
     @NotNull
-    @ApiModelProperty(value = "邀请数量")
+    @ApiModelProperty(value = "邀请人数量")
     private Long inviteNum;
-
-    @ApiModelProperty(value = "创建者")
-    private String createBy;
-
-    @ApiModelProperty(value = "更新者")
-    private String updateBy;
-
-    @ApiModelProperty(value = "创建日期")
-    private Timestamp createTime;
-
-    @ApiModelProperty(value = "更新时间")
-    private Timestamp updateTime;
+    @NotNull
+    @ApiModelProperty(value = "获赠人数量")
+    private Long giftNum;
 
     public void copy(AppAmount source){
         BeanUtil.copyProperties(source,this, CopyOptions.create().setIgnoreNullValue(true));

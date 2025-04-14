@@ -15,11 +15,9 @@
 */
 package me.zhengjie.modules.app.mapper;
 
-import me.zhengjie.modules.app.domain.AppInviteCode;
-import me.zhengjie.modules.app.domain.dto.AppInviteCodeQueryCriteria;
+import me.zhengjie.modules.app.domain.AppInviteRecord;
+import me.zhengjie.modules.app.domain.dto.AppInviteRecordQueryCriteria;
 import java.util.List;
-
-import me.zhengjie.modules.system.domain.User;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -28,16 +26,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
 * @author lijunhui
-* @date 2025-04-08
+* @date 2025-04-09
 **/
 @Mapper
-public interface AppInviteCodeMapper extends BaseMapper<AppInviteCode> {
+public interface AppInviteRecordMapper extends BaseMapper<AppInviteRecord> {
 
-    IPage<AppInviteCode> findAll(@Param("criteria") AppInviteCodeQueryCriteria criteria, Page<Object> page);
+    IPage<AppInviteRecord> findAll(@Param("criteria") AppInviteRecordQueryCriteria criteria, Page<Object> page);
 
-    List<AppInviteCode> findAll(@Param("criteria") AppInviteCodeQueryCriteria criteria);
-    AppInviteCode findEffectByUserId(@Param("userId") String userId);
-    AppInviteCode findEffectByCode(@Param("code") String userId);
-
-
+    List<AppInviteRecord> findAll(@Param("criteria") AppInviteRecordQueryCriteria criteria);
 }

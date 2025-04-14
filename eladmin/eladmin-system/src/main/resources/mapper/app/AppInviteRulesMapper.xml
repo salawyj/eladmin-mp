@@ -22,6 +22,6 @@
         from app_invite_rules
         <where>
         </where>
-        order by rule_id desc
+        order by rule_id asc
     </select>
 </mapper>

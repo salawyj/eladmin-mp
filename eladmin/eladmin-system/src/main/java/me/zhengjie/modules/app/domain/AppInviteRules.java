@@ -30,6 +30,7 @@ import java.util.Set;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import me.zhengjie.base.BaseEntity;
 import me.zhengjie.modules.system.domain.Role;
 
 /**
@@ -39,7 +40,7 @@ import me.zhengjie.modules.system.domain.Role;
  **/
 @Data
 @TableName("app_invite_rules")
-public class AppInviteRules implements Serializable {
+public class AppInviteRules extends BaseEntity implements Serializable {
 
     @TableId(value = "rule_id", type = IdType.AUTO)
     @ApiModelProperty(value = "ID")
@@ -54,18 +55,6 @@ public class AppInviteRules implements Serializable {
 
     @ApiModelProperty(value = "获赠余额")
     private BigDecimal giftBalance;
-
-    @ApiModelProperty(value = "创建者")
-    private String createBy;
-
-    @ApiModelProperty(value = "更新者")
-    private String updateBy;
-
-    @ApiModelProperty(value = "创建日期")
-    private Timestamp createTime;
-
-    @ApiModelProperty(value = "更新时间")
-    private Timestamp updateTime;
 
     @TableField(exist = false)
     @ApiModelProperty(value = "是否已经领取余额奖励 0未领取，1领取")

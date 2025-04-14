@@ -22,6 +22,9 @@
           <el-form-item label="过期时间">
             <el-input v-model="form.expireTime" style="width: 370px;" />
           </el-form-item>
+          <el-form-item label="ID">
+            <el-input v-model="form.inviteCodeId" style="width: 370px;" />
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="text" @click="crud.cancelCU">取消</el-button>
@@ -36,6 +39,7 @@
         <el-table-column prop="status" label="0-未使用 1-已使用" />
         <el-table-column prop="createTime" label="createTime" />
         <el-table-column prop="expireTime" label="过期时间" />
+        <el-table-column prop="inviteCodeId" label="ID" />
         <el-table-column v-if="checkPer(['admin','appInviteCode:edit','appInviteCode:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
@@ -59,13 +63,13 @@ import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
-const defaultForm = { code: null, appUserId: null, status: null, createTime: null, expireTime: null }
+const defaultForm = { code: null, appUserId: null, status: null, createTime: null, expireTime: null, inviteCodeId: null }
 export default {
   name: 'AppInviteCode',
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    return CRUD({ title: '邀请码', url: 'api/appInviteCode', idField: 'code', sort: 'code,desc', crudMethod: { ...crudAppInviteCode }})
+    return CRUD({ title: '邀请码', url: 'api/appInviteCode', idField: 'inviteCodeId', sort: 'inviteCodeId,desc', crudMethod: { ...crudAppInviteCode }})
   },
   data() {
     return {

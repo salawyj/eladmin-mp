@@ -33,10 +33,17 @@ spring:
 
   redis:
     #数据库索引
+#    本地
+#    database: ${REDIS_DB:1}
+#    host: ${REDIS_HOST:127.0.0.1}
+#    port: ${REDIS_PORT:6379}
+#    password: ${REDIS_PWD:}
+#阿里云
     database: ${REDIS_DB:1}
-    host: ${REDIS_HOST:127.0.0.1}
+    host: ${REDIS_HOST:121.199.61.116}
     port: ${REDIS_PORT:6379}
-    password: ${REDIS_PWD:}
+    password: ${REDIS_PWD:mypwd123red}
+
     #连接超时时间
     timeout: 5000
     # 连接池配置

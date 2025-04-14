@@ -15,12 +15,24 @@
 */
 package me.zhengjie.modules.app.rest;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import me.zhengjie.annotation.Log;
+import me.zhengjie.modules.app.domain.AppAmount;
 import me.zhengjie.modules.app.domain.AppGiftAmount;
+import me.zhengjie.modules.app.service.AppAmountService;
 import me.zhengjie.modules.app.service.AppGiftAmountService;
 import me.zhengjie.modules.app.domain.dto.AppGiftAmountQueryCriteria;
 import lombok.RequiredArgsConstructor;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
+
+import me.zhengjie.modules.app.service.AppInviteRecordService;
+import me.zhengjie.utils.SecurityUtils;
+import me.zhengjie.utils.enums.UnitEnum;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +41,8 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import me.zhengjie.utils.PageResult;
 
@@ -43,6 +57,9 @@ import me.zhengjie.utils.PageResult;
 public class AppGiftAmountController {
 
     private final AppGiftAmountService appGiftAmountService;
+    private final AppInviteRecordService appInviteRecordService;
+    private final AppAmountService appAmountService;
+
 
     @ApiOperation("导出数据")
     @GetMapping(value = "/download")
@@ -54,7 +71,7 @@ public class AppGiftAmountController {
     @GetMapping(value = "/pageList")
     @ApiOperation("查询获赠金额，赠送账单")
     @PreAuthorize("@el.check('appGiftAmount:list')")
-    public ResponseEntity<PageResult<AppGiftAmount>> queryAppGiftAmount(AppGiftAmountQueryCriteria criteria,@RequestBody String userId){
+    public ResponseEntity<PageResult<AppGiftAmount>> queryAppGiftAmount(AppGiftAmountQueryCriteria criteria,@RequestParam String userId){
         Page<Object> page = new Page<>(criteria.getPage(), criteria.getSize());
         return new ResponseEntity<>(appGiftAmountService.queryAll(criteria,page),HttpStatus.OK);
     }
@@ -64,7 +81,30 @@ public class AppGiftAmountController {
     @ApiOperation("领取获赠金额")
     @PreAuthorize("@el.check('appGiftAmount:add')")
     public ResponseEntity<Object> createAppGiftAmount(@Validated @RequestBody AppGiftAmount resources){
+        //新增获赠金额
+        resources.setAppUserId(SecurityUtils.getCurrentUserId());
+        resources.setUnit(UnitEnum.RMB.getDescription());
+        resources.setStatus(1);
+        //获取当前时间
+        Timestamp timestamp0 = new Timestamp(System.currentTimeMillis());
+        Calendar c = Calendar.getInstance();
+        c.setTime(timestamp0);
+        c.add(Calendar.DATE, 25); // 加* 天
+        resources.setInvalidTime(new Timestamp(c.getTimeInMillis()));
         appGiftAmountService.create(resources);
+
+        //获赠金额记录领取,改为已经领取，+++后面再加
+
+        //修改用户金额
+        {
+            AppAmount appAmount = appAmountService.findById(resources.getAppUserId().toString());
+            Long num = appAmount.getInviteNum()+1;
+            appAmount.setGiftNum(num);
+            appAmount.setGiftTotal(appAmount.getGiftTotal().add(resources.getGiftAmount()));
+            appAmount.setGiftBalance(appAmount.getGiftBalance().add(resources.getGiftAmount()));
+            appAmountService.update(appAmount);
+        }
+
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

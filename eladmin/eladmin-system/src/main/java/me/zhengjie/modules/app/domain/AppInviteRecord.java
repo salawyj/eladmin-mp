@@ -21,51 +21,43 @@ import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModelProperty;
 import cn.hutool.core.bean.copier.CopyOptions;
 import java.sql.Timestamp;
-import java.math.BigDecimal;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import me.zhengjie.base.BaseEntity;
 
 /**
 * @description /
 * @author lijunhui
-* @date 2025-04-08
+* @date 2025-04-09
 **/
 @Data
-@TableName("app_gift_amount")
-public class AppGiftAmount extends BaseEntity implements Serializable {
+@TableName("app_invite_record")
+public class AppInviteRecord implements Serializable {
 
-    @TableId(value = "gift_amount_id", type = IdType.AUTO)
+    @TableId(value = "record_id", type = IdType.AUTO)
     @ApiModelProperty(value = "ID")
-    private Long giftAmountId;
+    private Long recordId;
 
     @NotNull
-    @ApiModelProperty(value = "app用户id")
-    private Long appUserId;
+    @ApiModelProperty(value = "邀请用户id")
+    private Long inviterId;
 
-    @ApiModelProperty(value = "获赠金额")
-    private BigDecimal giftAmount;
+    @NotNull
+    @ApiModelProperty(value = "被邀请用户id")
+    private Long inviteeId;
 
-    @ApiModelProperty(value = "获赠余额")
-    private BigDecimal giftBalance;
+    @ApiModelProperty(value = "0-未发放 1-已发放")
+    private Integer rewardStatus;
 
-    @ApiModelProperty(value = "人民币，元")
-    private String unit;
+    @ApiModelProperty(value = "创建者")
+    private String createBy;
 
-    @ApiModelProperty(value = "失效时间")
-    private Timestamp invalidTime;
+    @ApiModelProperty(value = "创建日期")
+    private Timestamp createTime;
 
-    @ApiModelProperty(value = "0-失效 1-有效")
-    private Integer status;
-
-    @TableField(exist = false)
-    @ApiModelProperty(value = "邀请人数")
-    private Long inviteNum;
-
-    public void copy(AppGiftAmount source){
+    public void copy(AppInviteRecord source){
         BeanUtil.copyProperties(source,this, CopyOptions.create().setIgnoreNullValue(true));
     }
 }

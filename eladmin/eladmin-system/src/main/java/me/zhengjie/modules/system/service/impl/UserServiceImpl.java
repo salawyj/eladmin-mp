@@ -194,6 +194,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public User findByPhone(String phone) {
+        return userMapper.findByPhone(phone);
+    }
+    @Override
     public User getLoginData(String userName) {
         return userMapper.findByUsername(userName);
     }

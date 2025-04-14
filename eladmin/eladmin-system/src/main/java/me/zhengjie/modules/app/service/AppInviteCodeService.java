@@ -31,47 +31,48 @@ import me.zhengjie.utils.PageResult;
 * @date 2025-04-08
 **/
 public interface AppInviteCodeService extends IService<AppInviteCode> {
-
     /**
-    * 查询数据分页
-    * @param criteria 条件
-    * @param page 分页参数
-    * @return PageResult
-    */
+     * 查询数据分页
+     * @param criteria 条件
+     * @param page 分页参数
+     * @return PageResult
+     */
     PageResult<AppInviteCode> queryAll(AppInviteCodeQueryCriteria criteria, Page<Object> page);
 
     /**
-    * 查询所有数据不分页
-    * @param criteria 条件参数
-    * @return List<AppInviteCodeDto>
-    */
+     * 查询所有数据不分页
+     * @param criteria 条件参数
+     * @return List<AppInviteCodeDto>
+     */
     List<AppInviteCode> queryAll(AppInviteCodeQueryCriteria criteria);
 
-    AppInviteCode findByUserId(String userId);
-
     /**
-    * 创建
-    * @param resources /
-    */
+     * 创建
+     * @param resources /
+     */
     void create(AppInviteCode resources);
 
     /**
-    * 编辑
-    * @param resources /
-    */
+     * 编辑
+     * @param resources /
+     */
     void update(AppInviteCode resources);
 
     /**
-    * 多选删除
-    * @param ids /
-    */
-    void deleteAll(List<String> ids);
+     * 多选删除
+     * @param ids /
+     */
+    void deleteAll(List<Long> ids);
 
     /**
-    * 导出数据
-    * @param all 待导出的数据
-    * @param response /
-    * @throws IOException /
-    */
+     * 导出数据
+     * @param all 待导出的数据
+     * @param response /
+     * @throws IOException /
+     */
     void download(List<AppInviteCode> all, HttpServletResponse response) throws IOException;
+
+    AppInviteCode findByUserId(String userId);
+
+    AppInviteCode findEffectByCode(String code);
 }

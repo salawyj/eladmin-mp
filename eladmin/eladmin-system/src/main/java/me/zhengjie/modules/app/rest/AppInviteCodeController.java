@@ -21,6 +21,8 @@ import me.zhengjie.modules.app.service.AppInviteCodeService;
 import me.zhengjie.modules.app.domain.dto.AppInviteCodeQueryCriteria;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
+
+import me.zhengjie.utils.SecurityUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -49,8 +51,8 @@ public class AppInviteCodeController {
     @GetMapping(value = "/queryInfo")
     @ApiOperation("查询邀请码")
     @PreAuthorize("@el.check('appInviteCode:info')")
-    public ResponseEntity<AppInviteCode> queryAppInviteCodeInfo(@RequestBody String userId){
-        return new ResponseEntity<>(appInviteCodeService.findByUserId(userId),HttpStatus.OK);
+    public ResponseEntity<AppInviteCode> queryAppInviteCodeInfo(@RequestParam String userId){
+        return new ResponseEntity<>(appInviteCodeService.findByUserId(SecurityUtils.getCurrentUserId().toString()),HttpStatus.OK);
     }
 
 
@@ -68,9 +70,6 @@ public class AppInviteCodeController {
         Page<Object> page = new Page<>(criteria.getPage(), criteria.getSize());
         return new ResponseEntity<>(appInviteCodeService.queryAll(criteria,page),HttpStatus.OK);
     }
-
-
-
 
     @PostMapping
     @Log("新增邀请码")
@@ -94,7 +93,7 @@ public class AppInviteCodeController {
     @Log("删除邀请码")
     @ApiOperation("删除邀请码")
     @PreAuthorize("@el.check('appInviteCode:del')")
-    public ResponseEntity<Object> deleteAppInviteCode(@ApiParam(value = "传ID数组[]") @RequestBody List<String> ids) {
+    public ResponseEntity<Object> deleteAppInviteCode(@ApiParam(value = "传ID数组[]") @RequestBody List<Long> ids) {
         appInviteCodeService.deleteAll(ids);
         return new ResponseEntity<>(HttpStatus.OK);
     }

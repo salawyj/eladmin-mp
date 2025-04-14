@@ -69,6 +69,8 @@ public interface UserService extends IService<User> {
      */
     User findByName(String userName);
 
+    User findByPhone(String phone);
+
     /**
      * 根据用户名查询
      * @param userName /
