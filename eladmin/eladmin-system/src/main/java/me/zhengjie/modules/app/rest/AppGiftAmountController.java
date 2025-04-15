@@ -83,8 +83,8 @@ public class AppGiftAmountController {
     public ResponseEntity<Object> createAppGiftAmount(@Validated @RequestBody AppGiftAmount resources){
         //新增获赠金额
         resources.setAppUserId(SecurityUtils.getCurrentUserId());
-        resources.setUnit(UnitEnum.RMB.getDescription());
-        resources.setStatus(1);
+        resources.setUnitMoney(UnitEnum.RMB.getDescription());
+        resources.setGiftStatus(1);
         //获取当前时间
         Timestamp timestamp0 = new Timestamp(System.currentTimeMillis());
         Calendar c = Calendar.getInstance();
@@ -97,7 +97,7 @@ public class AppGiftAmountController {
 
         //修改用户金额
         {
-            AppAmount appAmount = appAmountService.findById(resources.getAppUserId().toString());
+            AppAmount appAmount = appAmountService.findById(SecurityUtils.getCurrentUserId().toString());
             Long num = appAmount.getInviteNum()+1;
             appAmount.setGiftNum(num);
             appAmount.setGiftTotal(appAmount.getGiftTotal().add(resources.getGiftAmount()));

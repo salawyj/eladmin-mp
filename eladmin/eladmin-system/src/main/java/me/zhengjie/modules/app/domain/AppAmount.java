@@ -58,7 +58,7 @@ public class AppAmount extends BaseEntity implements Serializable {
     private BigDecimal giftBalance;
 
     @ApiModelProperty(value = "人民币，元")
-    private String unit;
+    private String unitMoney;
 
     @NotNull
     @ApiModelProperty(value = "邀请人数量")

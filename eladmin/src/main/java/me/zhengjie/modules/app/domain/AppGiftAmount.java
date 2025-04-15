@@ -51,7 +51,7 @@ public class AppGiftAmount implements Serializable {
     private BigDecimal giftBalance;
 
     @ApiModelProperty(value = "人民币，元")
-    private String unit;
+    private String unitMoney;
 
     @ApiModelProperty(value = "创建者")
     private String createBy;

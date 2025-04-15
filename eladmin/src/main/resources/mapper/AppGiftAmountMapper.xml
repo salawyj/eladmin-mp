@@ -6,17 +6,17 @@
         <result column="app_user_id" property="appUserId"/>
         <result column="gift_amount" property="giftAmount"/>
         <result column="gift_balance" property="giftBalance"/>
-        <result column="unit_" property="unit"/>
+        <result column="unit_money" property="unitMoney"/>
         <result column="create_by" property="createBy"/>
         <result column="update_by" property="updateBy"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
         <result column="invalid_time" property="invalidTime"/>
-        <result column="status_" property="status"/>
+        <result column="gift_status" property="giftStatus"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        gift_amount_id, app_user_id, gift_amount, gift_balance, unit_, create_by, update_by, create_time, update_time, invalid_time, status_
+        gift_amount_id, app_user_id, gift_amount, gift_balance, unit_money, create_by, update_by, create_time, update_time, invalid_time, gift_status
     </sql>
 
     <select id="findAll" resultMap="BaseResultMap">

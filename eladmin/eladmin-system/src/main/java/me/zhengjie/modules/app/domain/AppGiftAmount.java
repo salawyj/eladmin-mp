@@ -16,6 +16,7 @@
 package me.zhengjie.modules.app.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModelProperty;
@@ -42,24 +43,26 @@ public class AppGiftAmount extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "ID")
     private Long giftAmountId;
 
-    @NotNull
+
     @ApiModelProperty(value = "app用户id")
     private Long appUserId;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty(value = "获赠金额")
     private BigDecimal giftAmount;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     @ApiModelProperty(value = "获赠余额")
     private BigDecimal giftBalance;
 
     @ApiModelProperty(value = "人民币，元")
-    private String unit;
+    private String unitMoney;
 
     @ApiModelProperty(value = "失效时间")
     private Timestamp invalidTime;
 
     @ApiModelProperty(value = "0-失效 1-有效")
-    private Integer status;
+    private Integer giftStatus;
 
     @TableField(exist = false)
     @ApiModelProperty(value = "邀请人数")

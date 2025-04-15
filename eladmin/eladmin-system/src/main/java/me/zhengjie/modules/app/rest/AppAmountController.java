@@ -71,12 +71,13 @@ public class AppAmountController {
         AppAmount appAmount = appAmountService.findById(SecurityUtils.getCurrentUserId().toString());
         if(appAmount == null){
             appAmount =new AppAmount();
-            appAmount.setAppUserId(Long.parseLong(userId));
+            appAmount.setAppUserId(SecurityUtils.getCurrentUserId());
             appAmount.setGiftBalance(new BigDecimal(0));
             appAmount.setGiftTotal(new BigDecimal(0));
             appAmount.setInviteNum(0L);
             appAmount.setRechargeBalance(new BigDecimal(0));
             appAmount.setRechargeTotal(new BigDecimal(0));
+            appAmount.setGiftNum(0L);
             appAmountService.create(appAmount);
         }
         return new ResponseEntity<>(appAmount,HttpStatus.OK);

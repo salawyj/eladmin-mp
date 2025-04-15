@@ -8,7 +8,7 @@
         <result column="gift_total" property="giftTotal"/>
         <result column="recharge_balance" property="rechargeBalance"/>
         <result column="gift_balance" property="giftBalance"/>
-        <result column="unit_" property="unit"/>
+        <result column="unit_money" property="unitMoney"/>
         <result column="invite_num" property="inviteNum"/>
         <result column="gift_num" property="giftNum"/>
         <result column="create_by" property="createBy"/>
@@ -18,7 +18,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        amount_id, app_user_id, recharge_total, gift_total, recharge_balance, gift_balance, unit_, invite_num,gift_num, create_by, update_by, create_time, update_time
+        amount_id, app_user_id, recharge_total, gift_total, recharge_balance, gift_balance, unit_money, invite_num,gift_num, create_by, update_by, create_time, update_time
     </sql>
 
     <select id="findAll" resultMap="BaseResultMap">

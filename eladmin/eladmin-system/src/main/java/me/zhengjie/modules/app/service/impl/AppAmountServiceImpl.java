@@ -91,7 +91,7 @@ public class AppAmountServiceImpl extends ServiceImpl<AppAmountMapper, AppAmount
             map.put("获赠总额", appAmount.getGiftTotal());
             map.put("充值余额", appAmount.getRechargeBalance());
             map.put("获赠余额", appAmount.getGiftBalance());
-            map.put("人民币，元", appAmount.getUnit());
+            map.put("人民币，元", appAmount.getUnitMoney());
             map.put("邀请数量", appAmount.getInviteNum());
             map.put("创建者", appAmount.getCreateBy());
             map.put("更新者", appAmount.getUpdateBy());

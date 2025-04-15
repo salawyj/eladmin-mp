@@ -92,7 +92,7 @@ public class AuthController {
      * app用户默认信息，
      */
     private final Long APP_USER_DEFAULT_DEPT_ID =19L;
-    private final Long APP_USER_DEFAULT_JOB_ID =10L;
+    private final Long APP_USER_DEFAULT_JOB_ID =13L;
     private final Long APP_USER_DEFAULT_ROLE_ID =3L;
     private final String APP_USER_DEFAULT_EAMIL ="@888.com";
 
@@ -262,9 +262,9 @@ public class AuthController {
         boolean success =true;
         SMSSendDto smsSendDto = new SMSSendDto ();
         if(success){
-            smsSendDto = new SMSSendDto("success","发送成功");
+            smsSendDto = new SMSSendDto("success","发送成功",code);
         }else {
-            smsSendDto = new SMSSendDto("fail","发送失败");
+            smsSendDto = new SMSSendDto("fail","发送失败",code);
         }
         return ResponseEntity.ok(smsSendDto);
     }

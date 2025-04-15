@@ -14,4 +14,6 @@ public class SMSSendDto{
     private String resultCode;
     @ApiModelProperty(value = "说明：发送成功，发送失败")
     private String msg;
+    @ApiModelProperty(value = "验证码")
+    private String code;
 }

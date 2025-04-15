@@ -83,13 +83,13 @@ public class AppGiftAmountServiceImpl extends ServiceImpl<AppGiftAmountMapper, A
             map.put("app用户id", appGiftAmount.getAppUserId());
             map.put("获赠金额", appGiftAmount.getGiftAmount());
             map.put("获赠余额", appGiftAmount.getGiftBalance());
-            map.put("人民币，元", appGiftAmount.getUnit());
+            map.put("人民币，元", appGiftAmount.getUnitMoney());
             map.put("创建者", appGiftAmount.getCreateBy());
             map.put("更新者", appGiftAmount.getUpdateBy());
             map.put("创建日期", appGiftAmount.getCreateTime());
             map.put("更新时间", appGiftAmount.getUpdateTime());
             map.put("失效时间", appGiftAmount.getInvalidTime());
-            map.put("0-失效 1-有效", appGiftAmount.getStatus());
+            map.put("0-失效 1-有效", appGiftAmount.getGiftStatus());
             list.add(map);
         }
         FileUtil.downloadExcel(list, response);

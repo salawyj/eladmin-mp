@@ -45,7 +45,7 @@ CREATE TABLE `app_amount` (
                               `gift_total` DECIMAL(9,2) DEFAULT NULL COMMENT '获赠总额',
                               `recharge_balance` DECIMAL(9,2) DEFAULT NULL COMMENT '充值余额',
                               `gift_balance` DECIMAL(9,2) DEFAULT NULL COMMENT '获赠余额',
-                              `unit_` varchar(255) DEFAULT NULL COMMENT '人民币，元',
+                              `unit_money` varchar(255) DEFAULT NULL COMMENT '人民币，元',
                               `invite_num` bigint(20) NOT NULL COMMENT '邀请人数量',
                               `gift_num` bigint(20) NOT NULL COMMENT '获赠人数量',
                               `create_by` varchar(255) DEFAULT NULL COMMENT '创建者',
@@ -60,7 +60,7 @@ CREATE TABLE `app_amount` (
 -- Records of app_amount
 -- ----------------------------
 BEGIN;
-INSERT INTO `app_amount` (`amount_id`, `app_user_id`, `recharge_total`,  `gift_total`,  `recharge_balance`,  `gift_balance`, `unit_`, `invite_num`,`gift_num`, `create_by`, `update_by`,`create_time`, `update_time`) VALUES (2, 2, 2.50, 2.00,2.50,0.50,'元',  0,0,NULL, 'admin', '2018-11-23 13:09:06', '2020-09-05 10:45:12');
+INSERT INTO `app_amount` (`amount_id`, `app_user_id`, `recharge_total`,  `gift_total`,  `recharge_balance`,  `gift_balance`, `unit_money`, `invite_num`,`gift_num`, `create_by`, `update_by`,`create_time`, `update_time`) VALUES (2, 2, 2.50, 2.00,2.50,0.50,'元',  0,0,NULL, 'admin', '2018-11-23 13:09:06', '2020-09-05 10:45:12');
 
 COMMIT;
 
@@ -70,13 +70,13 @@ CREATE TABLE `app_gift_amount` (
                                    `app_user_id` bigint(20) NOT NULL COMMENT 'app用户id',
                                    `gift_amount` DECIMAL(9,2) DEFAULT NULL COMMENT '获赠金额',
                                    `gift_balance` DECIMAL(9,2) DEFAULT NULL COMMENT '获赠余额',
-                                   `unit_` varchar(255) DEFAULT NULL COMMENT '人民币，元',
+                                   `unit_money` varchar(255) DEFAULT NULL COMMENT '人民币，元',
                                    `create_by` varchar(255) DEFAULT NULL COMMENT '创建者',
                                    `update_by` varchar(255) DEFAULT NULL COMMENT '更新者',
                                    `create_time` datetime DEFAULT NULL COMMENT '创建日期',
                                    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
                                    `invalid_time` datetime DEFAULT NULL COMMENT '失效时间',
-                                   `status_` TINYINT DEFAULT 1 COMMENT '0-失效 1-有效',
+                                   `gift_status` TINYINT DEFAULT 1 COMMENT '0-失效 1-有效',
                                    PRIMARY KEY (`gift_amount_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='app获赠金额记录表';
 

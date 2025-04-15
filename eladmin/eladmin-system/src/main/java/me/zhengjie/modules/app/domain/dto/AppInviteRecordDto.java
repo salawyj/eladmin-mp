@@ -41,7 +41,7 @@ public class AppInviteRecordDto implements Serializable {
     @ApiModelProperty(value = "邀请用户id")
     private Long inviterId;
 
-    @NotNull
+
     @ApiModelProperty(value = "被邀请用户id")
     private Long inviteeId;
 
@@ -54,6 +54,7 @@ public class AppInviteRecordDto implements Serializable {
     @ApiModelProperty(value = "创建日期")
     private Timestamp createTime;
 
+    @NotNull
     @ApiModelProperty(value = "邀请码")
     private String inviteCode;
     public void copy(AppInviteRecordDto source){

@@ -25,8 +25,11 @@ import me.zhengjie.modules.app.service.AppInviteCodeService;
 import me.zhengjie.modules.app.service.AppInviteRecordService;
 import me.zhengjie.modules.app.domain.dto.AppInviteRecordQueryCriteria;
 import lombok.RequiredArgsConstructor;
+
+import java.sql.Timestamp;
 import java.util.List;
 
+import me.zhengjie.utils.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,12 +84,16 @@ public class AppInviteRecordController {
         }
         AppInviteRecord appInviteRecord = new AppInviteRecord();
         BeanUtils.copyProperties(resources,appInviteRecord);
+        appInviteRecord.setInviteeId(SecurityUtils.getCurrentUserId());
         appInviteRecord.setRewardStatus(0);
+        appInviteRecord.setCreateTime(new Timestamp(System.currentTimeMillis()));
         //        新增邀请记录
         appInviteRecordService.create(appInviteRecord);
         //修改邀请码状态
-        appInviteCode.setStatus(1);
-        appInviteCodeService.update(appInviteCode);
+        {
+            appInviteCode.setStatus(1);
+            appInviteCodeService.update(appInviteCode);
+        }
         //修改邀请数量
         {
             AppAmount appAmount = appAmountService.findById(appInviteCode.getAppUserId().toString());
