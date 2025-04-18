@@ -31,6 +31,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import me.zhengjie.modules.app.service.AppInviteRecordService;
+import me.zhengjie.utils.PageUtil;
 import me.zhengjie.utils.SecurityUtils;
 import me.zhengjie.utils.enums.UnitEnum;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,7 @@ import javax.validation.constraints.NotNull;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import me.zhengjie.utils.PageResult;
+import oshi.util.platform.mac.SysctlUtil;
 
 /**
 * @author lijunhui
@@ -71,9 +73,10 @@ public class AppGiftAmountController {
     @GetMapping(value = "/pageList")
     @ApiOperation("查询获赠金额，赠送账单")
     @PreAuthorize("@el.check('appGiftAmount:list')")
-    public ResponseEntity<PageResult<AppGiftAmount>> queryAppGiftAmount(AppGiftAmountQueryCriteria criteria,@RequestParam String userId){
-        Page<Object> page = new Page<>(criteria.getPage(), criteria.getSize());
-        return new ResponseEntity<>(appGiftAmountService.queryAll(criteria,page),HttpStatus.OK);
+    public ResponseEntity<PageResult<AppGiftAmount>> queryAppGiftAmount(AppGiftAmountQueryCriteria criteria){
+       List<AppGiftAmount> appGiftAmountList = appGiftAmountService.queryAllByUser(criteria);
+       return new ResponseEntity<>(PageUtil.toPage(appGiftAmountList),HttpStatus.OK);
+
     }
 
     @PostMapping(value = "/add")

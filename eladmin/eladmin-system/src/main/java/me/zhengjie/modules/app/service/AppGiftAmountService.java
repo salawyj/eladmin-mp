@@ -47,6 +47,8 @@ public interface AppGiftAmountService extends IService<AppGiftAmount> {
     */
     List<AppGiftAmount> queryAll(AppGiftAmountQueryCriteria criteria);
 
+    List<AppGiftAmount> queryAllByUser(AppGiftAmountQueryCriteria criteria);
+
     /**
     * 创建
     * @param resources /

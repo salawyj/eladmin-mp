@@ -56,7 +56,7 @@ public class AppInviteRulesController {
     @GetMapping(value = "/pageList")
     @ApiOperation("查询邀请规则")
     @PreAuthorize("@el.check('appInviteRules:list')")
-    public ResponseEntity<PageResult<AppInviteRules>> queryAppInviteRules(AppInviteRulesQueryCriteria criteria,@RequestParam String userId){
+    public ResponseEntity<PageResult<AppInviteRules>> queryAppInviteRules(AppInviteRulesQueryCriteria criteria){
         List<AppInviteRules>  appInviteRulesList = appInviteRulesService.queryAll(criteria);
         //+++用户是否已经领取奖励
         return new ResponseEntity<>(PageUtil.toPage(appInviteRulesList),HttpStatus.OK);

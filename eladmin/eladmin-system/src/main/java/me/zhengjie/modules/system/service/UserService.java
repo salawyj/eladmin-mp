@@ -119,7 +119,7 @@ public interface UserService extends IService<User> {
     List<User> queryAll(UserQueryCriteria criteria);
 
     @Transactional(rollbackFor = Exception.class)
-    void updatePhone(String username, String phone);
+    void updatePhone(String username, String phone,String oldUsername);
 
     /**
      * 导出数据

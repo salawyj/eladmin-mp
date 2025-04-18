@@ -51,7 +51,7 @@ public class AppInviteCodeController {
     @GetMapping(value = "/queryInfo")
     @ApiOperation("查询邀请码")
     @PreAuthorize("@el.check('appInviteCode:info')")
-    public ResponseEntity<AppInviteCode> queryAppInviteCodeInfo(@RequestParam String userId){
+    public ResponseEntity<AppInviteCode> queryAppInviteCodeInfo(){
         return new ResponseEntity<>(appInviteCodeService.findByUserId(SecurityUtils.getCurrentUserId().toString()),HttpStatus.OK);
     }
 

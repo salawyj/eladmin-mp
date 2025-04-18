@@ -263,9 +263,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void updatePhone(String username, String phone) {
-        userMapper.updatePhone(username, phone);
-        flushCache(username);
+    public void updatePhone(String username, String phone,String oldUsername) {
+        userMapper.updatePhone(username, phone,oldUsername);
+        flushCache(oldUsername);
     }
 
 

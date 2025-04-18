@@ -23,6 +23,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import me.zhengjie.modules.app.service.AppGiftAmountService;
 import me.zhengjie.modules.app.domain.dto.AppGiftAmountQueryCriteria;
 import me.zhengjie.modules.app.mapper.AppGiftAmountMapper;
+import me.zhengjie.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import me.zhengjie.utils.PageUtil;
@@ -54,6 +55,13 @@ public class AppGiftAmountServiceImpl extends ServiceImpl<AppGiftAmountMapper, A
     public List<AppGiftAmount> queryAll(AppGiftAmountQueryCriteria criteria){
         return appGiftAmountMapper.findAll(criteria);
     }
+
+
+    @Override
+    public List<AppGiftAmount> queryAllByUser(AppGiftAmountQueryCriteria criteria){
+        return appGiftAmountMapper.findAllByUser(criteria, SecurityUtils.getCurrentUserId().toString());
+    }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)

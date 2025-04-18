@@ -34,7 +34,7 @@ public class AppAuthUserDto {
     private String phone;
 
     @NotBlank
-    @ApiModelProperty(value = "模块：1注册，2登录")
+    @ApiModelProperty(value = "模块：1注册，2登录，3修改")
     private String mode;
 
     @ApiModelProperty(value = "密码")

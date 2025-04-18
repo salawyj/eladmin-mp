@@ -27,4 +27,12 @@
         </where>
         order by gift_amount_id desc
     </select>
+
+    <select id="findAllByUser" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from app_gift_amount
+        where app_user_id = #{userId}
+        order by gift_amount_id desc
+    </select>
 </mapper>

@@ -34,4 +34,8 @@ public interface AppGiftAmountMapper extends BaseMapper<AppGiftAmount> {
     IPage<AppGiftAmount> findAll(@Param("criteria") AppGiftAmountQueryCriteria criteria, Page<Object> page);
 
     List<AppGiftAmount> findAll(@Param("criteria") AppGiftAmountQueryCriteria criteria);
+
+    List<AppGiftAmount> findAllByUser(@Param("criteria") AppGiftAmountQueryCriteria criteria,@Param("userId") String userId);
+
+
 }

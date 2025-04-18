@@ -22,6 +22,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import me.zhengjie.annotation.Log;
 import me.zhengjie.config.properties.RsaProperties;
+import me.zhengjie.modules.security.service.dto.AppAuthUserDto;
+import me.zhengjie.modules.security.service.dto.AuthUserPhoneDto;
 import me.zhengjie.modules.system.domain.Dept;
 import me.zhengjie.modules.system.domain.Role;
 import me.zhengjie.modules.system.service.DataService;
@@ -65,6 +67,7 @@ public class UserController {
     private final DeptService deptService;
     private final RoleService roleService;
     private final VerifyService verificationCodeService;
+    private final RedisUtils redisUtils;
 
     @ApiOperation("导出用户数据")
     @GetMapping(value = "/download")
@@ -209,14 +212,23 @@ public class UserController {
 
 
     @Log("修改手机号码")
-    @ApiOperation("修改手机号码")
+    @ApiOperation("修改手机号码，手机号码修改完成后退出重新登录")
     @PostMapping(value = "/updatePhone")
-    public ResponseEntity<Object> updateUserPhone(@PathVariable String code, @RequestBody User resources) throws Exception {
-
-        //验证码
-        User user = userService.findByName(SecurityUtils.getCurrentUsername());
-
-        userService.updatePhone(user.getUsername(),resources.getPhone());
+    public ResponseEntity<Object> updateUserPhone( @RequestBody AuthUserPhoneDto resources) throws Exception {
+        // 查询验证码
+        String code = redisUtils.get(SecurityUtils.getCurrentUsername(), String.class);
+        // 清除验证码
+        redisUtils.del(SecurityUtils.getCurrentUsername());
+        if (StringUtils.isBlank(code)) {
+            throw new BadRequestException("验证码不存在或已过期");
+        }
+        if (StringUtils.isBlank(resources.getCode()) || !resources.getCode().equalsIgnoreCase(code)) {
+            throw new BadRequestException("验证码错误");
+        }
+//old用户信息
+        User oldUser = userService.findByName(SecurityUtils.getCurrentUsername());
+        String userNameNew = userService.createUsernameByPhone(resources.getPhone());
+        userService.updatePhone(userNameNew,resources.getPhone(), oldUser.getUsername());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
