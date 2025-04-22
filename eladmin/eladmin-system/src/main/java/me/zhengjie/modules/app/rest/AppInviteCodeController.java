@@ -48,14 +48,6 @@ public class AppInviteCodeController {
     private final AppInviteCodeService appInviteCodeService;
 
 
-    @GetMapping(value = "/queryInfo")
-    @ApiOperation("查询邀请码")
-    @PreAuthorize("@el.check('appInviteCode:info')")
-    public ResponseEntity<AppInviteCode> queryAppInviteCodeInfo(){
-        return new ResponseEntity<>(appInviteCodeService.findByUserId(SecurityUtils.getCurrentUserId().toString()),HttpStatus.OK);
-    }
-
-
     @ApiOperation("导出数据")
     @GetMapping(value = "/download")
     @PreAuthorize("@el.check('appInviteCode:list')")
@@ -96,5 +88,12 @@ public class AppInviteCodeController {
     public ResponseEntity<Object> deleteAppInviteCode(@ApiParam(value = "传ID数组[]") @RequestBody List<Long> ids) {
         appInviteCodeService.deleteAll(ids);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/app/queryInfo")
+    @ApiOperation("手机端查询邀请码")
+    @PreAuthorize("@el.check('appInviteCode:info')")
+    public ResponseEntity<AppInviteCode> queryAppInviteCodeInfo(){
+        return new ResponseEntity<>(appInviteCodeService.findByUserId(SecurityUtils.getCurrentUserId().toString()),HttpStatus.OK);
     }
 }

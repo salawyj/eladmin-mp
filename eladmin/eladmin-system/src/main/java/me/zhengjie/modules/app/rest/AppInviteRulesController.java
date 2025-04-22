@@ -58,9 +58,7 @@ public class AppInviteRulesController {
     @PreAuthorize("@el.check('appInviteRules:list')")
     public ResponseEntity<PageResult<AppInviteRules>> queryAppInviteRules(AppInviteRulesQueryCriteria criteria){
         List<AppInviteRules>  appInviteRulesList = appInviteRulesService.queryAll(criteria);
-        //+++用户是否已经领取奖励
         return new ResponseEntity<>(PageUtil.toPage(appInviteRulesList),HttpStatus.OK);
-
     }
 
     @PostMapping
@@ -88,5 +86,12 @@ public class AppInviteRulesController {
     public ResponseEntity<Object> deleteAppInviteRules(@ApiParam(value = "传ID数组[]") @RequestBody List<Long> ids) {
         appInviteRulesService.deleteAll(ids);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @GetMapping(value = "/app/pageList")
+    @ApiOperation("手机端查询邀请规则")
+    @PreAuthorize("@el.check('appInviteRules:appList')")
+    public ResponseEntity<PageResult<AppInviteRules>> queryAppInviteRulesForApp(AppInviteRulesQueryCriteria criteria){
+        List<AppInviteRules>  appInviteRulesList = appInviteRulesService.queryAll(criteria);
+        return new ResponseEntity<>(PageUtil.toPage(appInviteRulesList),HttpStatus.OK);
     }
 }

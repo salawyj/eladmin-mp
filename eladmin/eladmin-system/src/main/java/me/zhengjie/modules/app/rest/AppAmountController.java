@@ -64,8 +64,8 @@ public class AppAmountController {
     }
 
 
-    @GetMapping(value = "/queryInfo")
-    @ApiOperation("查询用户金额")
+    @GetMapping(value = "/app/queryInfo")
+    @ApiOperation("手机端查询用户金额")
     @PreAuthorize("@el.check('appAmount:info')")
     public ResponseEntity<AppAmount> queryAppAmountInfo(){
         AppAmount appAmount = appAmountService.findById(SecurityUtils.getCurrentUserId().toString());

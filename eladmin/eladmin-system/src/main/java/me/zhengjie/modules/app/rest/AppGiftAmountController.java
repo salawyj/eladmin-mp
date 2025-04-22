@@ -69,14 +69,12 @@ public class AppGiftAmountController {
     public void exportAppGiftAmount(HttpServletResponse response, AppGiftAmountQueryCriteria criteria) throws IOException {
         appGiftAmountService.download(appGiftAmountService.queryAll(criteria), response);
     }
-
     @GetMapping(value = "/pageList")
     @ApiOperation("查询获赠金额，赠送账单")
     @PreAuthorize("@el.check('appGiftAmount:list')")
     public ResponseEntity<PageResult<AppGiftAmount>> queryAppGiftAmount(AppGiftAmountQueryCriteria criteria){
-       List<AppGiftAmount> appGiftAmountList = appGiftAmountService.queryAllByUser(criteria);
-       return new ResponseEntity<>(PageUtil.toPage(appGiftAmountList),HttpStatus.OK);
-
+        Page<Object> page = new Page<>(criteria.getPage(), criteria.getSize());
+        return new ResponseEntity<>(appGiftAmountService.queryAll(criteria,page),HttpStatus.OK);
     }
 
     @PostMapping(value = "/add")
@@ -84,6 +82,24 @@ public class AppGiftAmountController {
     @ApiOperation("领取获赠金额")
     @PreAuthorize("@el.check('appGiftAmount:add')")
     public ResponseEntity<Object> createAppGiftAmount(@Validated @RequestBody AppGiftAmount resources){
+        appGiftAmountService.create(resources);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/app/pageList")
+    @ApiOperation("手机端查询获赠金额，赠送账单")
+    @PreAuthorize("@el.check('appGiftAmount:appList')")
+    public ResponseEntity<PageResult<AppGiftAmount>> queryAppGiftAmounForApp(AppGiftAmountQueryCriteria criteria){
+       List<AppGiftAmount> appGiftAmountList = appGiftAmountService.queryAllByUser(criteria);
+       return new ResponseEntity<>(PageUtil.toPage(appGiftAmountList),HttpStatus.OK);
+
+    }
+
+    @PostMapping(value = "/app/add")
+    @Log("手机端新增获赠金额")
+    @ApiOperation("手机端领取获赠金额")
+    @PreAuthorize("@el.check('appGiftAmount:appAdd')")
+    public ResponseEntity<Object> createAppGiftAmountAppForApp(@Validated @RequestBody AppGiftAmount resources){
         //新增获赠金额
         resources.setAppUserId(SecurityUtils.getCurrentUserId());
         resources.setUnitMoney(UnitEnum.RMB.getDescription());

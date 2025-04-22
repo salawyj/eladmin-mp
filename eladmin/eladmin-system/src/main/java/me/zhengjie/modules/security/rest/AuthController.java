@@ -137,8 +137,8 @@ public class AuthController {
         // 返回登录信息
         return ResponseEntity.ok(authInfo);
     }
-    @Log("前端用户登录注册")
-    @ApiOperation("前端登录授权注册")
+    @Log("手机端用户登录注册")
+    @ApiOperation("手机端端登录授权注册")
     @AnonymousPostMapping(value = "/app/login")
     public ResponseEntity<Object> login(@Validated @RequestBody AppAuthUserDto authUser, HttpServletRequest request) throws Exception {
         // 密码解密
@@ -237,7 +237,7 @@ public class AuthController {
     }
 
     @ApiOperation("获取手机验证码")
-    @AnonymousGetMapping(value = "/phone/code")
+    @AnonymousPostMapping(value = "/phone/code")
     public  ResponseEntity<Object> getCode(@Validated @RequestBody AppAuthUserDto authUser) {
         // 通过阿里云发验证码给手机，
         //保存到数据库

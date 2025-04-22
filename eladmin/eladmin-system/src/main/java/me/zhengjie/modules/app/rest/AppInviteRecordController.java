@@ -76,7 +76,33 @@ public class AppInviteRecordController {
     @Log("新增邀请记录")
     @ApiOperation("新增邀请记录")
     @PreAuthorize("@el.check('appInviteRecord:add')")
-    public ResponseEntity<Object> createAppInviteRecord(@Validated @RequestBody AppInviteRecordDto resources){
+    public ResponseEntity<Object> createAppInviteRecord(@Validated @RequestBody AppInviteRecord resources){
+        appInviteRecordService.create(resources);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    @Log("修改邀请记录")
+    @ApiOperation("修改邀请记录")
+    @PreAuthorize("@el.check('appInviteRecord:edit')")
+    public ResponseEntity<Object> updateAppInviteRecord(@Validated @RequestBody AppInviteRecord resources){
+        appInviteRecordService.update(resources);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping
+    @Log("删除邀请记录")
+    @ApiOperation("删除邀请记录")
+    @PreAuthorize("@el.check('appInviteRecord:del')")
+    public ResponseEntity<Object> deleteAppInviteRecord(@ApiParam(value = "传ID数组[]") @RequestBody List<Long> ids) {
+        appInviteRecordService.deleteAll(ids);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PostMapping(value = "/app/add")
+    @Log("手机端新增邀请记录")
+    @ApiOperation("手机端新增邀请记录")
+    @PreAuthorize("@el.check('appInviteRecord:appAdd')")
+    public ResponseEntity<Object> createAppInviteRecordForApp(@Validated @RequestBody AppInviteRecordDto resources){
         AppInviteCode appInviteCode =  appInviteCodeService.findEffectByCode(resources.getInviteCode());
         //邀请用户id为空的时候，查询
         if(resources.getInviterId() == null){
@@ -105,21 +131,4 @@ public class AppInviteRecordController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping
-    @Log("修改邀请记录")
-    @ApiOperation("修改邀请记录")
-    @PreAuthorize("@el.check('appInviteRecord:edit')")
-    public ResponseEntity<Object> updateAppInviteRecord(@Validated @RequestBody AppInviteRecord resources){
-        appInviteRecordService.update(resources);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @DeleteMapping
-    @Log("删除邀请记录")
-    @ApiOperation("删除邀请记录")
-    @PreAuthorize("@el.check('appInviteRecord:del')")
-    public ResponseEntity<Object> deleteAppInviteRecord(@ApiParam(value = "传ID数组[]") @RequestBody List<Long> ids) {
-        appInviteRecordService.deleteAll(ids);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 }
