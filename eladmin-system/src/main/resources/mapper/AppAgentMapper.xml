@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.zhengjie.modules.app.mapper.AppAgentMapper">
+    <resultMap id="BaseResultMap" type="me.zhengjie.modules.app.domain.AppAgent">
+        <id column="agent_id" property="agentId"/>
+        <result column="name" property="name"/>
+        <result column="agent_url" property="agentUrl"/>
+        <result column="description" property="description"/>
+        <result column="create_by" property="createBy"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="icon" property="icon"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        agent_id, name, agent_url, description, create_by, update_by, create_time, update_time, icon
+    </sql>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from app_agent
+        <where>
+        </where>
+        order by agent_id desc
+    </select>
+</mapper>

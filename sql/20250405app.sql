@@ -25,6 +25,7 @@ CREATE TABLE `app_agent` (
                              `update_by` varchar(255) DEFAULT NULL COMMENT '更新者',
                              `create_time` datetime DEFAULT NULL COMMENT '创建日期',
                              `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+                             `icon` varchar(255) DEFAULT NULL COMMENT '图标',
                              PRIMARY KEY (`agent_id`) USING BTREE,
                              UNIQUE KEY `uniq_name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=COMPACT COMMENT='app智能体表';
@@ -33,7 +34,7 @@ CREATE TABLE `app_agent` (
 -- Records of app_agent
 -- ----------------------------
 BEGIN;
-INSERT INTO `app_agent` (`agent_id`, `name`, `agent_url`, `description`, `create_by`, `update_by`, `create_time`, `update_time`) VALUES (2, '普通用户', '<iframe src="http://8.217.1.253/chatbot/DDxqHjtMtMpI1GML" style="width: 100%; height: 100%; min-height: 700px" frameborder="0" allow="microphone"> </iframe>', 's说明-',  NULL, 'admin', '2018-11-23 13:09:06', '2020-09-05 10:45:12');
+INSERT INTO `app_agent` (`agent_id`, `name`, `agent_url`, `description`, `create_by`, `update_by`, `create_time`, `update_time`, `icon`) VALUES (2, '个人助理', '<iframe src="http://8.217.1.253/chatbot/DDxqHjtMtMpI1GML" style="width: 100%; height: 100%; min-height: 700px" frameborder="0" allow="microphone"> </iframe>', 's说明-',  NULL, 'admin', '2018-11-23 13:09:06', '2020-09-05 10:45:12','app');
 COMMIT;
 
 
