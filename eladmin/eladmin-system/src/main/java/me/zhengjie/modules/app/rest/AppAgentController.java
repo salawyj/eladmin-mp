@@ -85,4 +85,12 @@ public class AppAgentController {
         appAgentService.deleteAll(ids);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping("/app/pageList")
+    @ApiOperation("查询appAgent")
+    @PreAuthorize("@el.check('appAgent:appPageList')")
+    public ResponseEntity<PageResult<AppAgent>> queryPageAppAgent(AppAgentQueryCriteria criteria){
+        Page<Object> page = new Page<>(criteria.getPage(), criteria.getSize());
+        return new ResponseEntity<>(appAgentService.queryAll(criteria,page),HttpStatus.OK);
+    }
 }
