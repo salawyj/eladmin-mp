@@ -67,6 +67,9 @@ public class AppAmount extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "获赠人数量")
     private Long giftNum;
 
+    @NotNull
+    @ApiModelProperty(value = "月消费金额")
+    private BigDecimal monthConsumptionAmount= new BigDecimal(0);
     public void copy(AppAmount source){
         BeanUtil.copyProperties(source,this, CopyOptions.create().setIgnoreNullValue(true));
     }

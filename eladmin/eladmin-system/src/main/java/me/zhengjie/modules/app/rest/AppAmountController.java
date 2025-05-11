@@ -89,6 +89,7 @@ public class AppAmountController {
             appAmount.setGiftNum(0L);
             appAmountService.create(appAmount);
         }
+        //检查月消费金额
         return new ResponseEntity<>(appAmount,HttpStatus.OK);
     }
 
